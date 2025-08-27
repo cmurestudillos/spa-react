@@ -1,82 +1,131 @@
-import {useState, useEffect, Fragment} from 'react';
-import { useParams } from 'react-router';
-import { Link } from 'react-router-dom';
-// Datos a cargar
-import superheroes from '../../data/heroes.json';
-// Imagenes
-import imgDc from '../../assets/img/dc.svg';
-import imgMarvel from '../../assets/img/marvel.svg';
+import { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
 
-const Heroes = () => {
+const Heroe = () => {
+  const [heroe, setHeroe] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { id } = useParams();
 
-    // State del componente
-    const [heroe, getHeroeData] = useState();
-    const { nombre } = useParams();
+  useEffect(() => {
+    const fetchHeroe = async () => {
+      try {
+        setLoading(true);
+        // Llamamos directamente al endpoint del héroe por ID
+        const response = await fetch(`https://spa-heroes-service.vercel.app/api/superheroes/${id}`);
 
-    useEffect(() => {
-        const getHeroe = () => {
-            var heroeNombre = nombre;
-            for (let index = 0; index < superheroes.length; index++) {
-                if (heroeNombre === superheroes[index].nombre){
-                    getHeroeData(superheroes[index]);
-                }
-            }
+        if (!response.ok) {
+          if (response.status === 404) {
+            throw new Error('Héroe no encontrado');
+          }
+          throw new Error('Error al cargar el héroe');
         }
-        getHeroe();
-        // eslint-disable-next-line
-    },[]);
 
-    return ( 
-        <>
-            {heroe &&
-                <div className="bg-white p-3 rounded">
-                    <h1 className="animated fadeIn slow text-dark">{heroe.nombre} <small>( {heroe.aparicion} )</small></h1>
-                    <hr className="bg-dark"></hr>  
-                    <div className="row animated fadeIn slow">
-                        <div className="col-md-4">
-                            {heroe.nombre === 'Aquaman' &&
-                                    <img src={`../../assets/img/aquaman.svg`}  alt={heroe.nombre} title={heroe.nombre} className="img-fluid shadow"></img>
-                            }
-                            {heroe.nombre === 'Batman' &&
-                                    <img src={`../../assets/img/batman.svg`}  alt={heroe.nombre} title={heroe.nombre} className="img-fluid shadow"></img>
-                            }
-                            {heroe.nombre === 'Hulk' &&
-                                    <img src={`../../assets/img/hulk.svg`}  alt={heroe.nombre} title={heroe.nombre} className="img-fluid shadow"></img>
-                            }    
-                            {heroe.nombre === 'Daredevil' &&
-                                    <img src={`../../assets/img/daredevil.svg`}  alt={heroe.nombre} title={heroe.nombre} className="img-fluid shadow"></img>
-                            }     
-                            {heroe.nombre === 'Linterna Verde' &&
-                                    <img src={`../../assets/img/linterna-verde.svg`}  alt={heroe.nombre} title={heroe.nombre} className="img-fluid shadow"></img>
-                            } 
-                            {heroe.nombre === 'Spider-Man' &&
-                                    <img src={`../../assets/img/spiderman.svg`}  alt={heroe.nombre} title={heroe.nombre} className="img-fluid shadow"></img>
-                            }    
-                            {heroe.nombre === 'Wolverine' &&
-                                    <img src={`../../assets/img/wolverine.svg`}  alt={heroe.nombre} title={heroe.nombre} className="img-fluid shadow"></img>
-                            }                                                                                                                                            
-                            <br/><br/>
-                            <Link to={`/heroes`} type="button" className="btn btn-4 btn-block" ><i>Volver</i></Link>
-                        </div>
-                        <div className="col-md-8">
-                            <h3>{heroe.nombre}</h3>
-                            <hr/>
-                            <p>{heroe.bio}</p>
-                            <div>
-                                {heroe.casa === 'DC' &&
-                                    <img src={imgDc} title={heroe.casa} alt={heroe.casa} className="img-fluid" width="150" height="150"></img>
-                                }
-                                {heroe.casa === 'Marvel' &&
-                                    <img src={imgMarvel} title={heroe.casa} alt={heroe.casa} className="img-fluid" width="150" height="150"></img>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>            
-            }
+        const data = await response.json();
+        setHeroe(data.superheroe);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-        </>
+    fetchHeroe();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center">
+        <div className="spinner-border" role="status">
+          <span className="sr-only">Cargando...</span>
+        </div>
+      </div>
     );
-}
- 
-export default Heroes;
+  }
+
+  if (error) {
+    return (
+      <div className="alert alert-danger" role="alert">
+        Error: {error}
+        <br />
+        <Link to="/heroes" className="btn btn-primary mt-2">
+          Volver a Héroes
+        </Link>
+      </div>
+    );
+  }
+
+  if (!heroe) {
+    return (
+      <div className="alert alert-warning" role="alert">
+        Héroe no encontrado
+        <br />
+        <Link to="/heroes" className="btn btn-primary mt-2">
+          Volver a Héroes
+        </Link>
+      </div>
+    );
+  }
+
+  // Formatear la fecha de aparición
+  const fechaAparicion = new Date(heroe.aparicion).getFullYear();
+
+  // Construir la URL completa de la imagen
+  const imagenUrl = heroe.img ? `/${heroe.img}` : 'assets/img/no-image.svg';
+
+  return (
+    <div className="bg-white p-3 rounded">
+      <h1 className="animated fadeIn slow text-dark">
+        {heroe.nombre} <small>({fechaAparicion})</small>
+      </h1>
+      <hr className="bg-dark" />
+      <div className="row animated fadeIn slow">
+        <div className="col-md-4">
+          <img src={imagenUrl} alt={heroe.nombre} title={heroe.nombre} className="img-fluid shadow" />
+          <br />
+          <br />
+          <Link to="/heroes" type="button" className="btn btn-4 btn-block">
+            <i>Volver</i>
+          </Link>
+        </div>
+        <div className="col-md-8">
+          <h3>{heroe.nombre}</h3>
+          <hr />
+          <p>{heroe.bio}</p>
+          <div className="mt-3">
+            <p>
+              <strong>Casa editorial:</strong> {heroe.casa}
+            </p>
+            <p>
+              <strong>Primera aparición:</strong> {fechaAparicion}
+            </p>
+            <div className="mt-4">
+              {heroe.casa === 'DC' && (
+                <img
+                  src="../../assets/img/dc.svg"
+                  title={heroe.casa}
+                  alt={heroe.casa}
+                  className="img-fluid"
+                  width="72"
+                  height="72"
+                />
+              )}
+              {heroe.casa === 'Marvel' && (
+                <img
+                  src="../../assets/img/marvel.svg"
+                  title={heroe.casa}
+                  alt={heroe.casa}
+                  className="img-fluid"
+                  width="72"
+                  height="72"
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Heroe;
