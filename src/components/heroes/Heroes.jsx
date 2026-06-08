@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import Tarjeta from '../shared/tarjeta/Tarjeta';
 
 const Heroes = ({ searchTerm }) => {

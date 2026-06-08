@@ -70,7 +70,7 @@ const Tarjeta = ({ searchTerm = '' }) => {
       <div className="col-12">
         <div className="alert alert-info text-center" role="alert">
           <h5>No se encontraron resultados</h5>
-          <p>No hay superhéroes que coincidan con "{searchTerm}"</p>
+          <p>No hay superhéroes que coincidan con &quot;{searchTerm}&quot;</p>
         </div>
       </div>
     );

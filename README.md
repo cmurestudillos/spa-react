@@ -18,7 +18,7 @@ Una aplicación web completa para explorar superhéroes de Marvel y DC Comics, d
 - 🎨 **Interfaz Moderna** - Diseño limpio con Bootstrap 5
 
 ### 🛠️ Características Técnicas
-- **Frontend**: React 18 + Vite + Bootstrap 5
+- **Frontend**: React 18 + Vite 5 + Bootstrap 4
 - **Backend**: Node.js + Express.js + MongoDB
 - **Routing**: React Router DOM
 - **Estado**: React Hooks (useState, useEffect)
@@ -31,21 +31,20 @@ Una aplicación web completa para explorar superhéroes de Marvel y DC Comics, d
 ### Frontend
 ```json
 {
-  "react": "^18.2.0",
-  "react-router-dom": "^6.8.0",
-  "bootstrap": "^5.3.0",
-  "react-bootstrap": "^2.7.0",
-  "vite": "^4.4.5"
+  "react": "^18.3.1",
+  "react-router-dom": "^6.28.2",
+  "bootstrap": "^4.6.2",
+  "react-bootstrap": "^1.6.7",
+  "vite": "^5.4.19"
 }
 ```
 
 ### Backend (API)
 ```json
 {
-  "node": "^18.0.0",
-  "express": "^4.18.0",
-  "mongodb": "^5.0.0",
-  "mongoose": "^7.0.0",
+  "node": ">=18.0.0",
+  "express": "^4.21.2",
+  "mongoose": "^8.15.0",
   "cors": "^2.8.5"
 }
 ```
@@ -54,8 +53,18 @@ Una aplicación web completa para explorar superhéroes de Marvel y DC Comics, d
 
 ### Prerrequisitos
 - Node.js >= 18.0.0
-- npm o yarn
-- MongoDB (local o Atlas)
+- pnpm 11.5.2 (`npm install -g pnpm`)
+
+### Instalación
+
+```bash
+git clone https://github.com/cmurestudillos/spa-react.git
+cd spa-react
+pnpm install
+pnpm dev
+```
+
+Abre `http://localhost:5173` en el navegador.
 
 ## 🏗️ Estructura del Proyecto
 
